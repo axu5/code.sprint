@@ -5,26 +5,50 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public abstract class FileWritable {
+    private static String dataDirectory = "./data";
+
     /**
      * @param id
      * @return
      */
     public static String getFilePath(String id) {
-        return "data\\" + id + ".data";
+        return dataDirectory + "/" + id + ".data";
+    }
+
+    public static String getDataDirectory() {
+        return dataDirectory;
+    }
+
+    public static void ensureDirectoryExists() throws Exception {
+        try {
+            Files.createDirectory(Paths.get(dataDirectory));
+        } catch (FileAlreadyExistsException e) {
+            // Ignore
+            return;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     /**
      * @param id
      */
-    public void serialize(String id) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(FileWritable.getFilePath(id))) {
+    public static void serialize(String id, Object obj) {
+        String fileLocation = FileWritable.getFilePath(id);
+
+        try {
+            ensureDirectoryExists();
+            FileOutputStream fileOutputStream = new FileOutputStream(fileLocation);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this);
+            objectOutputStream.writeObject(obj);
             objectOutputStream.flush();
             objectOutputStream.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
