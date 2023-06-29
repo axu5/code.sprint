@@ -1,7 +1,5 @@
 package view;
 
-import java.util.stream.Stream;
-
 import controller.SystemController;
 import model.Todo;
 import util.UserInput;
