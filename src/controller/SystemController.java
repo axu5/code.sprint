@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import util.FileAccessors;
 import util.FileWritable;
@@ -37,23 +38,30 @@ public class SystemController {
 
     // @SuppressWarnings("unchecked")
     public void loadData() {
-        String dataDirectory = FileWritable.getDataDirectory();
-        File[] files = FileAccessors.getFiles(dataDirectory);
-        if (files.length > 0) {
-            System.out.println("Loading data...");
+        try {
+
+            Path dataDirectory = FileWritable.getDataDirectory();
+            File[] files = FileAccessors.getFiles(dataDirectory.toAbsolutePath().toString());
+            if (files.length > 0) {
+                System.out.println("Loading data...");
+            }
+
+            // for (File file : files) {
+            // switch (file.getName()) {
+            // case "example_id":
+            // // Warnings are suppressed so that this cast can be done
+            // Object obj = FileAccessors.parse(file);
+            // if (obj instanceof ArrayList) {
+            // this.todos = (ArrayList<Todo>) obj;
+            // }
+            // break;
+            // }
+            // }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
         }
 
-        // for (File file : files) {
-        // switch (file.getName()) {
-        // case "example_id":
-        // // Warnings are suppressed so that this cast can be done
-        // Object obj = FileAccessors.parse(file);
-        // if (obj instanceof ArrayList) {
-        // this.todos = (ArrayList<Todo>) obj;
-        // }
-        // break;
-        // }
-        // }
     }
 
     public String getViewport() {
