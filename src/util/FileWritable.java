@@ -7,26 +7,27 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public abstract class FileWritable {
-    private static String dataDirectory = "./data";
+    private static Path dataDirectory = Paths.get("./data");
 
     /**
      * @param id
      * @return
      */
     public static String getFilePath(String id) {
-        return dataDirectory + "/" + id + ".data";
+        return dataDirectory.toAbsolutePath() + "/" + id + ".data";
     }
 
-    public static String getDataDirectory() {
+    public static Path getDataDirectory() {
         return dataDirectory;
     }
 
     public static void ensureDirectoryExists() throws Exception {
         try {
-            Files.createDirectory(Paths.get(dataDirectory));
+            Files.createDirectory(dataDirectory);
         } catch (FileAlreadyExistsException e) {
             // Ignore
             return;

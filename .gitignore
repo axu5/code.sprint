@@ -1,1 +1,4 @@
 data
+*.bluej
+*.ctxt
+src/**/*.class

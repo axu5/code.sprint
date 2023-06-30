@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import model.Todo;
@@ -39,23 +40,28 @@ public class SystemController {
 
     @SuppressWarnings("unchecked")
     public void loadData() {
-        String dataDirectory = FileWritable.getDataDirectory();
-        File[] files = FileAccessors.getFiles(dataDirectory);
-        if (files.length > 0) {
+        Path dataDirectory = FileWritable.getDataDirectory();
+        try {
+            FileWritable.ensureDirectoryExists();
+            File[] files = FileAccessors.getFiles(dataDirectory.toAbsolutePath().toString());
+
             System.out.println("Loading data...");
+            for (File file : files) {
+                switch (file.getName()) {
+                    case (TODOS_ID + ".data"):
+                        // Warnings are suppressed so that this cast can be done
+                        Object obj = FileAccessors.parse(file);
+                        if (obj instanceof ArrayList) {
+                            this.todos = (ArrayList<Todo>) obj;
+                        }
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
         }
 
-        for (File file : files) {
-            switch (file.getName()) {
-                case (TODOS_ID + ".data"):
-                    // Warnings are suppressed so that this cast can be done
-                    Object obj = FileAccessors.parse(file);
-                    if (obj instanceof ArrayList) {
-                        this.todos = (ArrayList<Todo>) obj;
-                    }
-                    break;
-            }
-        }
     }
 
     public void addTodo(Todo todo) {
