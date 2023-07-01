@@ -61,7 +61,6 @@ public class SystemController {
             e.printStackTrace();
             return;
         }
-
     }
 
     public String getViewport() {
