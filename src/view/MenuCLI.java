@@ -14,7 +14,12 @@ public class MenuCLI {
     public void showMain() {
         System.out.println("The coolest CLI");
 
-        mainLoop: while (true) {
+        /**
+         * Wait until the program is called to shut down through the state variable
+         * "shutdown." This ensures the program can be shutdown from anywhere where
+         * there is access to the program state.
+         */
+        while (!this.state.isShutdown()) {
             String[] menus = {
                     "First view",
                     "Second view",
@@ -31,7 +36,8 @@ public class MenuCLI {
                     this.view2();
                     break;
                 case 3:
-                    break mainLoop;
+                    this.state.setShutdown(true);
+                    break;
             }
         }
 

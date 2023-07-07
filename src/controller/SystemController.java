@@ -1,8 +1,5 @@
 package controller;
 
-import java.io.File;
-import java.nio.file.Path;
-
 import model.Example;
 import util.FileAccessors;
 import util.FileWritable;
@@ -14,6 +11,7 @@ public class SystemController {
     /* ANCHOR Keep track of state in the controller */
     private static final String EXAMPLE_ID = "example";
     private Example example = new Example();
+    private boolean shutdown = false;
 
     public SystemController(String viewport) {
         this.viewport = viewport;
@@ -40,12 +38,11 @@ public class SystemController {
         FileWritable.serialize(EXAMPLE_ID, example);
     }
 
+    /*
+     * Use data files to overwrite state variables
+     */
     public void loadData() {
         try {
-            /*
-             * If an example object data file is found, over write the
-             * initial value of this.example
-             */
             Object exampleObj = FileAccessors.getObjectById(EXAMPLE_ID);
             if (exampleObj instanceof Example) {
                 this.example = (Example) exampleObj;
@@ -56,5 +53,13 @@ public class SystemController {
 
     public String getViewport() {
         return viewport;
+    }
+
+    public boolean isShutdown() {
+        return shutdown;
+    }
+
+    public void setShutdown(boolean shutdown) {
+        this.shutdown = shutdown;
     }
 }
