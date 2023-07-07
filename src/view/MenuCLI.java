@@ -1,6 +1,8 @@
 package view;
 
 import controller.SystemController;
+import model.Board;
+import util.InputValidation;
 import util.UserInput;
 
 public class MenuCLI {
@@ -21,35 +23,114 @@ public class MenuCLI {
          */
         while (!this.state.isShutdown()) {
             String[] menus = {
-                    "First view",
-                    "Second view",
+                    "Start game",
                     "Exit"
             };
 
             int option = UserInput.inputTable("Some question", menus);
 
-            switch (menus[option]) {
-                case "First view":
-                    this.view1();
+            switch (option) {
+                case 0:
+                    this.gameView();
                     break;
-                case "Second view":
-                    this.view2();
-                    break;
-                case "Exit":
+                case 1:
                     this.state.setShutdown(true);
                     break;
             }
         }
 
         // Save the current state to disk
-        state.save();
+        // state.save();
     }
 
-    public void view1() {
-        System.out.println("\n------\nView 1\n------\n");
+    public void gameView() {
+        Board board = this.state.getBoard();
+        System.out.println(board);
+
+        InputValidation validator = new InputValidation() {
+            public boolean check(String input) {
+                input = input.trim();
+                if (input.equalsIgnoreCase("x")) {
+                    return true;
+                }
+
+                // Should be in the format of #,#
+                String[] nums = input.split(",");
+                if (nums.length != 2) {
+                    return false;
+                }
+                try {
+                    int y = Integer.parseInt(nums[0]);
+                    int x = Integer.parseInt(nums[1]);
+
+                    if (y < 0 || y > board.getWidth() - 1 || x < 0 || x > board.getHeight() - 1) {
+                        return false;
+                    }
+                } catch (Exception _e) {
+                    return false;
+                }
+
+                return true;
+            }
+        };
+
+        String input = UserInput.input("Enter a location [Row,Column] or E[x]it: ", "Must be in the format #,#",
+                validator);
+
+        if (input.equalsIgnoreCase("x")) {
+            this.state.setShutdown(true);
+            return;
+        }
+
+        String[] nums = input.split(",");
+        int x = Integer.parseInt(nums[0]);
+        int y = Integer.parseInt(nums[1]);
+
+        String[] options = {
+                "F",
+                "R",
+        };
+
+        String todo = UserInput.useOptionsIgnoreCase("What would you like to do? (F=Flag, R=Reveal) ", options);
+
+        boolean gameOver = false;
+        switch (todo) {
+            case "F":
+                board.flag(y, x);
+                break;
+            case "R":
+                gameOver = board.reveal(y, x);
+                break;
+        }
+
+        if (gameOver) {
+            this.gameOverView();
+            return;
+        }
+
+        this.gameView();
     }
 
-    public void view2() {
-        System.out.println("\n------\nView 2\n------\n");
+    public void gameOverView() {
+        Board board = this.state.getBoard();
+
+        System.out.println(" ------------------------------");
+        System.out.println(" |     G A M E    O V E R     |");
+        System.out.println(" |       YOU HIT A BOMB       |");
+        System.out.println(" ------------------------------");
+
+        System.out.println();
+
+        System.out.println(board.gameEndBoard());
+
+        // Reveal full board
+
+        String todo = UserInput.inputOptional(" ...[R]estart or press Enter to exit: ");
+        if (todo.equalsIgnoreCase("r")) {
+            board.reset();
+            return;
+        }
+
+        this.state.setShutdown(true);
     }
 }

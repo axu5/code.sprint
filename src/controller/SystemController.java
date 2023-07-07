@@ -1,6 +1,6 @@
 package controller;
 
-import model.Example;
+import model.Board;
 import util.FileAccessors;
 import util.FileWritable;
 import view.MenuCLI;
@@ -9,8 +9,8 @@ public class SystemController {
     private String viewport;
 
     /* ANCHOR Keep track of state in the controller */
-    private static final String EXAMPLE_ID = "example";
-    private Example example = new Example();
+    private static final String BOARD_ID = "game";
+    private Board board = new Board();
     private boolean shutdown = false;
 
     public SystemController(String viewport) {
@@ -35,7 +35,7 @@ public class SystemController {
      * Save important data
      */
     public void save() {
-        FileWritable.serialize(EXAMPLE_ID, example);
+        FileWritable.serialize(BOARD_ID, board);
     }
 
     /*
@@ -43,9 +43,9 @@ public class SystemController {
      */
     public void loadData() {
         try {
-            Object exampleObj = FileAccessors.getObjectById(EXAMPLE_ID);
-            if (exampleObj instanceof Example) {
-                this.example = (Example) exampleObj;
+            Object exampleObj = FileAccessors.getObjectById(BOARD_ID);
+            if (exampleObj instanceof Board) {
+                this.board = (Board) exampleObj;
             }
         } catch (Exception _e) {
         }
@@ -61,5 +61,21 @@ public class SystemController {
 
     public void setShutdown(boolean shutdown) {
         this.shutdown = shutdown;
+    }
+
+    public void setViewport(String viewport) {
+        this.viewport = viewport;
+    }
+
+    public static String getBoardId() {
+        return BOARD_ID;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 }
