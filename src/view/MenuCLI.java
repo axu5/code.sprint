@@ -28,14 +28,14 @@ public class MenuCLI {
 
             int option = UserInput.inputTable("Some question", menus);
 
-            switch (option) {
-                case 0:
+            switch (menus[option]) {
+                case "First view":
                     this.view1();
                     break;
-                case 1:
+                case "Second view":
                     this.view2();
                     break;
-                case 2:
+                case "Exit":
                     this.state.setShutdown(true);
                     break;
             }

@@ -23,6 +23,12 @@ public class UserInput {
         return input;
     }
 
+    /**
+     * Get an optional input from the user. If the user does not respond "" is
+     * returned.
+     * 
+     * @param prompt The string that should be prompted to the user.
+     */
     public static String inputOptional(String prompt) {
         System.out.print(prompt);
         return SCANNER.nextLine();
@@ -150,7 +156,7 @@ public class UserInput {
      * @return Returns the double that was entered as string to the terminal.
      */
     public static double getDouble(String prompt) {
-        String errorString = "Please enter a valid decimal number.";
+        String errorMessage = "Please enter a valid decimal number.";
         while (true) {
             String input = UserInput.input(prompt);
             try {
@@ -158,8 +164,34 @@ public class UserInput {
                 return Double.parseDouble(input);
             } catch (Exception _exception) {
                 // If an error occurs, ask again with an error message.
-                System.out.println(errorString);
+                System.out.println(errorMessage);
             }
         }
+    }
+
+    /**
+     * @param prompt  The prompt that will be shown to the user.
+     * @param options The possible values that may be inputted.
+     * @return The options value that the user input.
+     */
+    public static String useOptionsIgnoreCase(String prompt, String[] options) {
+        String errorMessage = "The valid options are:\n";
+        for (String opt : options) {
+            errorMessage += "- " + opt + "\n";
+        }
+
+        boolean valid = false;
+        while (!valid) {
+            System.out.println(errorMessage);
+            String input = UserInput.input(prompt);
+            for (String opt : options) {
+                if (input.equalsIgnoreCase(opt)) {
+                    return opt;
+                }
+            }
+            System.out.println("\nThat is not a valid input.");
+        }
+
+        return "";
     }
 }
