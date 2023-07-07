@@ -35,7 +35,7 @@ public class MenuCLI {
                 case 1:
                     this.view2();
                     break;
-                case 3:
+                case 2:
                     this.state.setShutdown(true);
                     break;
             }
@@ -46,10 +46,10 @@ public class MenuCLI {
     }
 
     public void view1() {
-        System.out.println("View 1");
+        System.out.println("\n------\nView 1\n------\n");
     }
 
     public void view2() {
-        System.out.println("View 2");
+        System.out.println("\n------\nView 2\n------\n");
     }
 }
