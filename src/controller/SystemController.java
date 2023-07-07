@@ -3,6 +3,7 @@ package controller;
 import java.io.File;
 import java.nio.file.Path;
 
+import model.Example;
 import util.FileAccessors;
 import util.FileWritable;
 import view.MenuCLI;
@@ -11,6 +12,8 @@ public class SystemController {
     private String viewport;
 
     /* ANCHOR Keep track of state in the controller */
+    private static final String EXAMPLE_ID = "example";
+    private Example example = new Example();
 
     public SystemController(String viewport) {
         this.viewport = viewport;
@@ -34,32 +37,20 @@ public class SystemController {
      * Save important data
      */
     public void save() {
+        FileWritable.serialize(EXAMPLE_ID, example);
     }
 
-    // @SuppressWarnings("unchecked")
     public void loadData() {
         try {
-
-            Path dataDirectory = FileWritable.getDataDirectory();
-            File[] files = FileAccessors.getFiles(dataDirectory.toAbsolutePath().toString());
-            if (files.length > 0) {
-                System.out.println("Loading data...");
+            /*
+             * If an example object data file is found, over write the
+             * initial value of this.example
+             */
+            Object exampleObj = FileAccessors.getObjectById(EXAMPLE_ID);
+            if (exampleObj instanceof Example) {
+                this.example = (Example) exampleObj;
             }
-
-            // for (File file : files) {
-            // switch (file.getName()) {
-            // case "example_id":
-            // // Warnings are suppressed so that this cast can be done
-            // Object obj = FileAccessors.parse(file);
-            // if (obj instanceof ArrayList) {
-            // this.todos = (ArrayList<Todo>) obj;
-            // }
-            // break;
-            // }
-            // }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
+        } catch (Exception _e) {
         }
     }
 

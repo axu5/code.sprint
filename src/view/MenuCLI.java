@@ -16,9 +16,9 @@ public class MenuCLI {
 
         mainLoop: while (true) {
             String[] menus = {
-                    Views.View1.getName(),
-                    Views.View2.getName(),
-                    Views.Exit.getName(),
+                    "First view",
+                    "Second view",
+                    "Exit"
             };
 
             int option = UserInput.inputTable("Some question", menus);
